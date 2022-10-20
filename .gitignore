@@ -1,0 +1,4 @@
+.deps-ready
+*.tar.gz
+nuttxspace/
+release/
