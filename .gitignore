@@ -1,4 +1,4 @@
-.deps-ready
+.env-ready
 *.tar.gz
 nuttxspace/
 release/

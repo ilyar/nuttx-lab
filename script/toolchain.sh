@@ -14,6 +14,7 @@ usage() {
   println "  -x enable debug mode (trace per command line in scripts)"
   println "  -c check requirements for environment"
   println "  -s setup environment ENV_TYPE=${ENV_TYPE}"
+  println "  -d setup common deps"
 }
 
 commonSetup() {
@@ -49,7 +50,6 @@ debianSetup() {
   info "Installing Toolchain"
   sudo apt-get install -qq -y \
     gcc-arm-none-eabi binutils-arm-none-eabi
-  commonSetup
 }
 
 macosSetup() {
@@ -88,11 +88,12 @@ main() {
   if [ -z "$*" ]; then usage; fi
 
   cmd=
-  while getopts ":hxsc" flag; do
+  while getopts ":hxscd" flag; do
     case "${flag}" in
     x) set -o xtrace ;;
     s) cmd=setupEnvironment ;;
     c) cmd=checkEnvironment ;;
+    d) cmd=commonSetup ;;
     ?) usage ;;
     esac
   done

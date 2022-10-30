@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: |
-          make release
+          make build
       - uses: actions/upload-artifact@v3
         with:
           name: release-${{  github.ref_name }}

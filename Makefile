@@ -1,43 +1,47 @@
 version=$(shell TZ=UTC date +'%y%m%d.%H%M')
 ROOT_PATH=$(shell pwd)
 
-clean-all: clean-deps clean
+clean-all: clean-deps
+	rm -fr .env-ready
 
-clean-deps:
+clean-deps: clean
 	rm -fr nuttxspace
-	rm -fr .deps-ready
 
 clean:
 	rm -fr release
 	make -C nuttxspace/nuttx distclean
 
-.deps-ready:
-	bash script/toolchain.sh -s
+nuttxspace: .env-ready
+	bash script/toolchain.sh -d
 	rm -fr nuttxspace/apps/examples/lvgldemo
 	ln -s ${ROOT_PATH}/src ${ROOT_PATH}/nuttxspace/apps/examples/lvgldemo
-	touch .deps-ready
 
-release/stm32f746g-disc.bin: .deps-ready
+.env-ready:
+	bash script/toolchain.sh -s
+	touch .env-ready
+
+release:
+	mkdir -p release
+
+release/stm32f746g-disc.bin: release nuttxspace
 	nuttxspace/nuttx/tools/configure.sh -l stm32f746g-disco:lvgl
 	cp config/stm32f746g-disco.config nuttxspace/nuttx/.config
 	make -C nuttxspace/nuttx
-	mkdir -p release
 	mv nuttxspace/nuttx/nuttx.bin release/stm32f746g-disc.bin
 	mv nuttxspace/nuttx/nuttx.hex release/stm32f746g-disc.hex
 	make -C nuttxspace/nuttx distclean
 
-release/sim-linux: release .deps-ready
+release/sim-linux: release nuttxspace
 	nuttxspace/nuttx/tools/configure.sh -l sim:lvgl
 	cp config/sim-linux.config nuttxspace/nuttx/.config
 	make -C nuttxspace/nuttx
-	mkdir -p release
 	mv nuttxspace/nuttx/nuttx release/sim-linux
 	make -C nuttxspace/nuttx distclean
 
-test: .deps-ready
+test: nuttxspace
 	echo "not implement"
 
-release: release/stm32f746g-disc.bin release/sim-linux
+build: release/stm32f746g-disc.bin release/sim-linux
 
 nuttx-list:
 	cd nuttxspace/nuttx && ./tools/configure.sh -L
