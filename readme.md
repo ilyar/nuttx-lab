@@ -4,6 +4,12 @@ https://nuttx.apache.org/
 
 ## Develop
 
+**For build all target:**
 ```shell
-make release
+make build
+```
+
+**Release new version:**
+```shell
+make version
 ```
