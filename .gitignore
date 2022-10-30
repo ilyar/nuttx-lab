@@ -2,3 +2,8 @@
 *.tar.gz
 nuttxspace/
 release/
+*.zip
+*lv_demos*
+.config
+Make.dep
+.depend
