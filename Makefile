@@ -1,3 +1,4 @@
+version=$(shell TZ=UTC date +'%y%m%d.%H%M')
 ROOT_PATH=$(shell pwd)
 
 clean-all: clean-deps clean
@@ -40,3 +41,7 @@ release: release/stm32f746g-disc.bin release/sim-linux
 
 nuttx-list:
 	cd nuttxspace/nuttx && ./tools/configure.sh -L
+
+version:
+	git tag ${version}
+	git push origin ${version}
