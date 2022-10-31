@@ -61,8 +61,8 @@ macosSetup() {
 windowsSetup() {
   info "setup for platform windows"
   choco install cygwin
-  choco install cyg-get
   call RefreshEnv.cmd
+  choco install cyg-get
   cyg-get make
   cyg-get bison
   cyg-get libmpc-devel
