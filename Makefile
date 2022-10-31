@@ -38,6 +38,20 @@ release/sim-linux: release nuttxspace
 	mv nuttxspace/nuttx/nuttx release/sim-linux
 	make -C nuttxspace/nuttx distclean
 
+release/sim-win: release nuttxspace
+	nuttxspace/nuttx/tools/configure.sh -c sim:lvgl
+	cp config/sim-cygwin.config nuttxspace/nuttx/.config
+	make -C nuttxspace/nuttx
+	mv nuttxspace/nuttx/nuttx release/sim-win
+	make -C nuttxspace/nuttx distclean
+
+release/sim-macos: release nuttxspace
+	nuttxspace/nuttx/tools/configure.sh -m sim:lvgl
+	cp config/sim-macos.config nuttxspace/nuttx/.config
+	make -C nuttxspace/nuttx
+	mv nuttxspace/nuttx/nuttx release/sim-win
+	make -C nuttxspace/nuttx distclean
+
 test: nuttxspace
 	echo "not implement"
 

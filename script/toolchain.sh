@@ -53,11 +53,30 @@ debianSetup() {
 }
 
 macosSetup() {
-  notImplemented "setup"
+  info "setup for platform macos"
+  brew install x86_64-elf-gcc # Used by simulator
+  brew install u-boot-tools # Some platform integrate with u-boot
 }
 
 windowsSetup() {
-  notImplemented "setup"
+  info "setup for platform windows"
+  choco install cygwin
+  choco install cyg-get
+  cyg-get make
+  cyg-get bison
+  cyg-get libmpc-devel
+  cyg-get gcc-core
+  cyg-get byacc
+  cyg-get automake-1.15
+  cyg-get gcc-g++
+  cyg-get gperf
+  cyg-get libncurses-devel
+  cyg-get flex
+  cyg-get gdb
+  cyg-get libmpfr-devel
+  cyg-get git
+  cyg-get unzip
+  cyg-get zlib-devel
 }
 
 checkRequirements() {
