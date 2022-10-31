@@ -62,6 +62,7 @@ windowsSetup() {
   info "setup for platform windows"
   choco install cygwin
   choco install cyg-get
+  refreshenv
   cyg-get make
   cyg-get bison
   cyg-get libmpc-devel
