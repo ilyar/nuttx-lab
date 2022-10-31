@@ -71,8 +71,10 @@ debianSetup() {
 
 macosSetup() {
   info "setup for platform macos"
+  brew update
   brew install x86_64-elf-gcc # Used by simulator
   brew install u-boot-tools # Some platform integrate with u-boot
+  brew install kconfig-frontends
 }
 
 windowsSetup() {
