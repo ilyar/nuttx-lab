@@ -19,19 +19,36 @@ usage() {
 
 commonSetup() {
   info "setup common"
-  if [ ! -d nuttxspace ]; then
-    nuttxVersion="10.3.0"
-    nuttxOrg="https://github.com/apache"
-    info "NuttX (v${nuttxVersion}) downloading"
-    mkdir nuttxspace
-    cd nuttxspace
-    printf "${nuttxVersion}" > VERSION
-    curl -L "${nuttxOrg}/incubator-nuttx/tarball/nuttx-${nuttxVersion}" -o nuttx.tar.gz
-    tar zxf nuttx.tar.gz --one-top-level=nuttx --strip-components 1
-    curl -L "${nuttxOrg}/incubator-nuttx-apps/tarball/nuttx-${nuttxVersion}" -o apps.tar.gz
-    tar zxf apps.tar.gz --one-top-level=apps --strip-components 1
+  nuttxVersion="10.3.0"
+  nuttxOrg="https://github.com/apache"
+  mkdir -p nuttxspace
+  if [ ! -f nuttxspace/nuttx-${nuttxVersion}.tar.gz ]; then
+    info "NuttX core (v${nuttxVersion}) downloading"
+    url="${nuttxOrg}/incubator-nuttx/tarball/nuttx-${nuttxVersion}"
+    curl -Ls $url -o nuttxspace/nuttx-${nuttxVersion}.tar.gz
+  fi
+  if [ ! -f nuttxspace/apps-${nuttxVersion}.tar.gz ]; then
+    info "NuttX apps (v${nuttxVersion}) downloading"
+    url="${nuttxOrg}/incubator-nuttx-apps/tarball/nuttx-${nuttxVersion}"
+    curl -Ls $url -o nuttxspace/apps-${nuttxVersion}.tar.gz
+  fi
+  if [ ! -d nuttxspace/nuttx ]; then
+    info "NuttX core (v${nuttxVersion}) extract"
+    mkdir nuttxspace/nuttx
+    arch=nuttxspace/nuttx-${nuttxVersion}.tar.gz
+    tar zxf $arch -C nuttxspace/nuttx --strip-components=1
+    echo -n "${nuttxVersion}" > nuttxspace/nuttx/VERSION
   else
-    info "NuttX (v$(cat nuttxspace/VERSION)) exist"
+    info "NuttX core (v$(cat nuttxspace/nuttx/VERSION)) exist"
+  fi
+  if [ ! -d nuttxspace/apps ]; then
+    info "NuttX apps (v${nuttxVersion}) extract"
+    mkdir nuttxspace/apps
+    arch=nuttxspace/apps-${nuttxVersion}.tar.gz
+    tar zxf $arch -C nuttxspace/apps --strip-components=1
+    echo -n "${nuttxVersion}" > nuttxspace/apps/VERSION
+  else
+    info "NuttX apps (v$(cat nuttxspace/apps/VERSION)) exist"
   fi
 }
 
@@ -53,11 +70,33 @@ debianSetup() {
 }
 
 macosSetup() {
-  notImplemented "setup"
+  info "setup for platform macos"
+  brew update
+  brew install x86_64-elf-gcc # Used by simulator
+  brew install u-boot-tools # Some platform integrate with u-boot
+  brew install kconfig-frontends
 }
 
 windowsSetup() {
-  notImplemented "setup"
+  info "setup for platform windows"
+  choco install cygwin
+  refreshenv
+  choco install cyg-get
+  cyg-get make
+  cyg-get bison
+  cyg-get libmpc-devel
+  cyg-get gcc-core
+  cyg-get byacc
+  cyg-get automake-1.15
+  cyg-get gcc-g++
+  cyg-get gperf
+  cyg-get libncurses-devel
+  cyg-get flex
+  cyg-get gdb
+  cyg-get libmpfr-devel
+  cyg-get git
+  cyg-get unzip
+  cyg-get zlib-devel
 }
 
 checkRequirements() {
